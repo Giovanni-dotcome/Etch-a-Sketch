@@ -1,20 +1,24 @@
 const container = document.querySelector('.container');
-const button = document.querySelector('button');
-let n = 16;
+const newGrid = document.querySelector('.newGrid');
+const cancel = document.querySelector('.cancel');
+const colors = document.querySelectorAll('.color');
+
+let n = 100;
+let color = 'blue';
 const size = 800;
 
-const changeColor = (e) => {
-  e.target.style.backgroundColor = 'blue';
-};
+colors.forEach(el => {
+  el.addEventListener('click', () => {
+    color = el.classList[1];
+  })
+})
 
-const newGrid = () => {
-  input = prompt("enter the number of cells per side (max 100): ");
-  n = Math.min(Math.max(input, 1), 100);
+const getNewGrid = () => {
   remGrid();
   genGrid();
 };
 
-button.addEventListener('click', newGrid);
+newGrid.addEventListener('click', getNewGrid);
 
 const genGrid = () => {
   for (let index = 0; index < n * n; index++) {
@@ -23,8 +27,23 @@ const genGrid = () => {
     cell.classList.add(`cell-${index}`);
     cell.style.width = `${size / n}px`;
     cell.style.height = `${size / n}px`;
-    cell.style.border = '1px solid grey';
-    cell.addEventListener('mouseenter', changeColor);
+
+     cell.addEventListener('mousedown', (e) => {
+      // Prevent text selection
+      e.preventDefault();
+    });
+
+    cell.addEventListener('contextmenu', (e) => {
+      // Prevent text selection
+      e.preventDefault();
+    });
+
+    cell.addEventListener('mouseover', (e) => {
+      if (e.buttons === 1) {
+        e.target.style.backgroundColor = color;
+      }
+    });
+
     container.appendChild(cell);
   }
 };
@@ -33,6 +52,5 @@ const remGrid = () => {
   while (container.firstChild)
     container.removeChild(container.firstChild);
 };
-
 
 genGrid();
